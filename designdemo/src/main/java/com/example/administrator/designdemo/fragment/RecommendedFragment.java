@@ -120,6 +120,11 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                         swipeLayout.setRefreshing(false);
                     }
                     if (i == 1) {
+                        entity.clear();
+                        entity = result.getResults();
+                        adapter.setDatas(entity);
+                        DialogUtils.closeProgressDialog();
+                        adapter.notifyDataSetChanged();
                         return;
                     }
                     if (result.getResults().size() == 0) {

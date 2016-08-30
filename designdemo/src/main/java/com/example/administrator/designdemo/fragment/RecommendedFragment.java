@@ -120,6 +120,7 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                         swipeLayout.setRefreshing(false);
                     }
                     if (i == 1) {
+                        startIndex=2;
                         entity.clear();
                         entity = result.getResults();
                         adapter.setDatas(entity);

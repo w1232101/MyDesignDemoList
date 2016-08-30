@@ -49,15 +49,15 @@ public class DialogUtils {
 		// Toast.LENGTH_SHORT).show();
 	}
 
-	public static void showProgressDialog(Context context) {
+	public static void showProgressDialog(Context context,String title) {
 		progressDialog = new LoadingDialog(context);
-		progressDialog.setTitle("正在加载...");
+		progressDialog.setTitle(title);
 		progressDialog.setCanceledOnTouchOutside(false);
 		progressDialog.show();
 	}
 
 	public static void closeProgressDialog() {
-		if (progressDialog != null) {
+		if (progressDialog != null&&progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
 	}

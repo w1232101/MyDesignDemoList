@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FA7198</color>
+    <color name="swipecolor">#3D5932</color>
+    <!--<color name="colorPrimaryDark">#96435B</color>-->
+    <color name="colorPrimaryDark">#0000</color>
+    <color name="colorAccent">#99f0486c</color>
+    <!-- 红色 -->
+    <color name="red">#d71345</color>
+    <!-- 紫色 -->
+    <color name="zise">#6950a1</color>
+    <!-- 绿色 -->
+    <color name="lvse">#1d953f</color>
+    <!-- 黑色 -->
+    <color name="black">#000000</color>
+    <color name="navigation_background_light">#FFF8F8F8</color>
+    <color name="navigation_item_text_color_normal">#E7E7E7</color>
+    <color name="navigation_item_text_color_highlight">@color/colorPrimary</color>
+    <color name="navigation_item_icon_color_normal">#AEAEAE</color>
+    <color name="navigation_item_icon_color_highlight">@color/colorPrimary</color>
+    <color name="font_normal">@color/black</color>
+    <color name="itemGrayBg">#eaeaea</color>
+</resources>

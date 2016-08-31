@@ -15,4 +15,6 @@ public class Constant {
 	/* bug反馈 */
 	public static String ExceptionLog = URL_API_HOST_IP + "APPException.ashx";
 	public static String url=URL_API_HOST_IP+"EnfoService/Login_Service_V1_1.ashx?";
+
+	public static final String BASEURL="http://gank.io/api/";
 }

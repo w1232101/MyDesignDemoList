@@ -33,6 +33,7 @@ public abstract class BaseFragment extends Fragment {
         this.inflater = inflater;
         parentView = inflater.inflate(getLayoutResId(), container, false);
         activity = getSupportActivity();
+        ButterKnife.bind(this, parentView);
         return parentView;
     }
 
@@ -41,7 +42,6 @@ public abstract class BaseFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
         finishCreateView(savedInstanceState);
     }
 

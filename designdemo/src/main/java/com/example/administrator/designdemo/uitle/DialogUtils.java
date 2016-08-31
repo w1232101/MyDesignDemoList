@@ -42,7 +42,7 @@ public class DialogUtils {
 			mCToast.hide();
 		int times = time == 0 ? 100 : CToast.LENGTH_SHORT;
 		String str = Res.getResources().getString(msgId);
-		mCToast = CToast.makeText(BaseApplication.CONTEXT, str, times);
+		mCToast = CToast.makeText(BaseApplication.getInstance(), str, times);
 		mCToast.setGravity( Gravity.BOTTOM, 0, 20);
 		mCToast.show();
 		// Toast.makeText(BaseApplication.CONTEXT, msgId,

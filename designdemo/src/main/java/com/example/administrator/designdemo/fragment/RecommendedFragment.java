@@ -4,6 +4,7 @@
 
 package com.example.administrator.designdemo.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.example.administrator.designdemo.Activity.ImageShowActivity;
 import com.example.administrator.designdemo.R;
 import com.example.administrator.designdemo.bean.GankEntity;
 import com.example.administrator.designdemo.bean.HttpResult;
@@ -100,7 +102,7 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
 
             }
         });
-        onRefresh();
+                onRefresh();
     }
 
     private void getPicFromNet(final int i) {
@@ -109,6 +111,88 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
 
             DialogUtils.showProgressDialog(getActivity(),"努力加载ing...");
         }
+//        Call<HttpResult> call = BaseApplication.getRetrofitInterface(getActivity()).getCommonDateNew("福利", 15, i);
+//        call.enqueue(new Callback<HttpResult>() {
+//            @Override
+//            public void onFailure(Call<HttpResult> call, Throwable t) {
+//                if (swipeLayout.isRefreshing()) {
+//                    swipeLayout.setRefreshing(false);
+//                }
+//                DialogUtils.closeProgressDialog();
+//            }
+//
+//            @Override
+//            public void onResponse(Call<HttpResult> call, Response<HttpResult> response) {
+//                HttpResult result = (HttpResult) response.body();
+//                if (adapter != null && entity.size() > 0) {
+//
+//                    if (swipeLayout.isRefreshing()) {
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                    if (i == 1) {
+//                        startIndex=2;
+//                        entity.clear();
+//                        entity = result.getResults();
+//                        adapter.setDatas(entity);
+//                        DialogUtils.closeProgressDialog();
+//                        adapter.notifyDataSetChanged();
+//                        return;
+//                    }
+//                    if (result.getResults().size() == 0) {
+//                        DialogUtils.closeProgressDialog();
+//                        DialogUtils.showToast(getActivity(), "没有更多数据了！", 0);
+//                        return;
+//                    }
+//                    entity.addAll(result.getResults());
+//                    startIndex++;
+//                    adapter.setDatas(entity);
+//                    DialogUtils.closeProgressDialog();
+//                    adapter.notifyDataSetChanged();
+//                    return;
+//                }
+//                entity = result.getResults();
+//                adapter = new MyRecyclerCommonAdapter<GankEntity>(getActivity(), R.layout.item_welfare_staggered, entity) {
+//                    @Override
+//                    protected void convert(final ViewHolder holder, GankEntity s, final int position) {
+//                        ((TextView) holder.getView(R.id.tvShowTime)).setText(s.getPublishedAt().substring(0, s.getPublishedAt().indexOf("T")));
+//                        Glide.with(getActivity())
+//                                .load(s.getUrl())
+//                                .asBitmap()
+//                                .placeholder(R.drawable.pic_gray_bg)
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .into(new SimpleTarget<Bitmap>(screenWidth / 2, screenWidth / 2) {
+//                                          @Override
+//                                          public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                              int width = resource.getWidth();
+//                                              int height = resource.getHeight();
+//                                              //计算高宽比
+//                                              int finalHeight = (screenWidth / 2) * height / width;
+//                                              ViewGroup.LayoutParams layoutParams = holder.getView(R.id.rl_root).getLayoutParams();
+//                                              layoutParams.height = finalHeight;
+//                                              ((ImageView) holder.getView(R.id.image)).setImageBitmap(resource);
+//                                          }
+//                                      }
+//                                );
+//                        holder.getView(R.id.card_view).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                HttpResult result1 = new HttpResult();
+//                                result1.setResults(entity);
+//                                Intent intent = new Intent(getActivity(),ImageShowActivity.class);
+//                                intent.putExtra("pos",position);
+//                                intent.putExtra("datas",result1);
+//                                startActivity(intent);
+//                            }
+//                        });
+//                    }
+//                };
+//                if (swipeLayout.isRefreshing()) {
+//                    swipeLayout.setRefreshing(false);
+//                }
+//                rv.setAdapter(adapter);
+//            }
+//        });
+
         MyOkHttpUtils.getInstance(getActivity(), new MyCallBack() {
 
             @Override
@@ -120,6 +204,7 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                         swipeLayout.setRefreshing(false);
                     }
                     if (i == 1) {
+                        startIndex = 2;
                         entity.clear();
                         entity = result.getResults();
                         adapter.setDatas(entity);
@@ -142,7 +227,7 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                 entity = result.getResults();
                 adapter = new MyRecyclerCommonAdapter<GankEntity>(getActivity(), R.layout.item_welfare_staggered, entity) {
                     @Override
-                    protected void convert(final ViewHolder holder, GankEntity s, int position) {
+                    protected void convert(final ViewHolder holder, GankEntity s, final int position) {
                         ((TextView) holder.getView(R.id.tvShowTime)).setText(s.getPublishedAt().substring(0, s.getPublishedAt().indexOf("T")));
                         Glide.with(getActivity())
                                 .load(s.getUrl())
@@ -161,9 +246,18 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                                               ((ImageView) holder.getView(R.id.image)).setImageBitmap(resource);
                                           }
                                       }
-
                                 );
-
+                        holder.getView(R.id.card_view).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                HttpResult result1 = new HttpResult();
+                                result1.setResults(entity);
+                                Intent intent = new Intent(getActivity(), ImageShowActivity.class);
+                                intent.putExtra("pos", position);
+                                intent.putExtra("datas", result1);
+                                startActivity(intent);
+                            }
+                        });
                     }
                 };
                 if (swipeLayout.isRefreshing()) {
@@ -179,7 +273,7 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                 }
                 DialogUtils.closeProgressDialog();
             }
-        }).getHttp("http://gank.io/api/data/%E7%A6%8F%E5%88%A9/20/" + i, "MainActivity", HttpResult.class);
+        }).getHttp(" http://gank.io/api/data/福利/15/" + i, "MainActivity", HttpResult.class);
     }
 
     @Override

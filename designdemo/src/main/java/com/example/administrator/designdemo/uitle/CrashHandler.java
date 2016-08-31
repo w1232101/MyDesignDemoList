@@ -17,7 +17,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.administrator.designdemo.BaseActivity;
+import com.example.administrator.designdemo.Activity.BaseActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;

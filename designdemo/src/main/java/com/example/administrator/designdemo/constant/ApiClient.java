@@ -10,8 +10,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.example.administrator.designdemo.BaseApplication;
-import com.example.administrator.designdemo.tools.DLog;
-import com.example.administrator.designdemo.tools.UrlDecryption;
+import com.example.administrator.designdemo.uitle.DLog;
+import com.example.administrator.designdemo.uitle.UrlDecryption;
 
 
 public class ApiClient {

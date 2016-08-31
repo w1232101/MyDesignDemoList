@@ -6,7 +6,6 @@ package com.example.administrator.designdemo.uitle;
 
 import android.content.Context;
 
-import com.example.administrator.designdemo.tools.DLog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhy.http.okhttp.OkHttpUtils;

@@ -5,6 +5,7 @@
 package com.example.administrator.designdemo.uitle;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,6 +40,7 @@ public class MyOkHttpUtils {
 
 	public void getHttp(String urlString, String tag) {
 		this.TAG = tag;
+		checkNet();
 //		if (!((Activity) context).isFinishing()) {
 //			DialogUtils.showProgressDialog(context);
 //		}
@@ -58,6 +60,14 @@ public class MyOkHttpUtils {
 		});
 	}
 
+	private void checkNet() {
+		boolean hasNetWork = NetUtils.hasNetWorkConection(context);
+		if (!hasNetWork){
+			Toast.makeText(context, "网络异常,请检查网络后重试", Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
 	private void error(Call arg0, Exception arg1, int arg2) {
 //		DialogUtils.closeProgressDialog();
 		DialogUtils.showToast(context,"网络异常", 0);
@@ -67,6 +77,7 @@ public class MyOkHttpUtils {
 
 	public <T> void getHttp(String urlString, String tag, final Class<T> cls) {
 		this.TAG = tag;
+		checkNet();
 //		if (!((Activity) context).isFinishing()) {
 //			DialogUtils.showProgressDialog(context);
 //		}
@@ -98,6 +109,7 @@ public class MyOkHttpUtils {
 
 	public <T> void getHttpList(String urlString, String tag, final Class<T> cls) {
 		this.TAG = tag;
+		checkNet();
 //		if (!((Activity) context).isFinishing()) {
 //			DialogUtils.showProgressDialog(context);
 //		}
@@ -126,6 +138,7 @@ public class MyOkHttpUtils {
 	public <T> void postHttpList(String urlString, Map<String, String> params, String tag, final Class<T> cls) {
 		// TODO
 		this.TAG = tag;
+		checkNet();
 //		if (!((Activity) context).isFinishing()) {
 //			DialogUtils.showProgressDialog(context);
 //		}
@@ -155,6 +168,7 @@ public class MyOkHttpUtils {
 	public <T> void postHttp(String urlString, Map<String, String> params, String tag, final Class<T> cls) {
 		// TODO
 		this.TAG = tag;
+		checkNet();
 //		if (!((Activity) context).isFinishing()) {
 //			DialogUtils.showProgressDialog(context);
 //		}

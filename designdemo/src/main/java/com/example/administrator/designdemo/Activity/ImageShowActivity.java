@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.administrator.designdemo.R;
@@ -77,6 +78,7 @@ public class ImageShowActivity extends BaseActivity {
 
     @Override
     public void initToolBar() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
     @Override

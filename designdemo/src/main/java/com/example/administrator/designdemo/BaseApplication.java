@@ -9,7 +9,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.administrator.designdemo.uitle.CrashHandler;
-import com.example.administrator.designdemo.uitle.DialogUtils;
 import com.example.administrator.designdemo.uitle.NetUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -104,7 +103,6 @@ public class BaseApplication extends Application {
 			boolean netWorkConection = NetUtils.hasNetWorkConection(BaseApplication.getInstance());
 			Request request = chain.request();
 			if (!netWorkConection) {
-				DialogUtils.showToast(BaseApplication.getInstance(),"网络请求失败,请检查网络后重试",0);
 				request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
 			}
 

@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:background="?colorPri">
 
         <ImageView
             android:id="@+id/background_image_view"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:text="HotBitmapGG"
                 android:padding="5dp"
-                android:textColor="@color/navigation_item_text_color_normal"
+                android:textColor="?navigation_item_text_color"
                 android:textSize="18sp" />
 
             <TextView

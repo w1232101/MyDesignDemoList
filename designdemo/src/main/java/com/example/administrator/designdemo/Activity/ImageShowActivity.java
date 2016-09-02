@@ -22,12 +22,6 @@ import butterknife.ButterKnife;
  * Created by Administrator on 2016/8/30.
  */
 public class ImageShowActivity extends BaseActivity {
-    //    @Bind(R.id.iv_image_show)
-//    PinchImageView ivImageShow;
-//    @Bind(R.id.tv_image_show)
-//    TextView tvImageShow;
-//    @Bind(R.id.rl_image_show)
-//    RelativeLayout rlImageShow;
     @Bind(R.id.vp_image_show)
     ViewPager vp;
     @Bind(R.id.tv_image_show)

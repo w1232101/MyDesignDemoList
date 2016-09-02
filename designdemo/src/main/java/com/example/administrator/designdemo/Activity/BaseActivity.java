@@ -3,6 +3,8 @@ package com.example.administrator.designdemo.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.administrator.designdemo.uitle.ActivityCollector;
+import com.example.administrator.designdemo.uitle.MyThemeManager;
 import com.example.administrator.designdemo.uitle.StatusBarCompat;
 
 import butterknife.ButterKnife;
@@ -16,9 +18,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
 
+        //设置主题 皮肤
+        MyThemeManager.onActivityCreateSetSkin(this);
+
         super.onCreate(savedInstanceState);
         //设置布局内容
+
         setContentView(getLayoutId());
+        //为换肤做准备！！！
+        ActivityCollector.addActivity(this);
         //初始化黄油刀控件绑定框架
         ButterKnife.bind(this);
         //适配4.4系统状态栏
@@ -34,8 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy()
     {
-
         super.onDestroy();
+        ActivityCollector.removeActivity(this);
         ButterKnife.unbind(this);
     }
 

@@ -62,7 +62,7 @@ public class RollHeaderView extends FrameLayout implements OnPageChangeListener 
 
         //让banner的高度是屏幕的1/4
         ViewGroup.LayoutParams vParams = mViewPager.getLayoutParams();
-        vParams.height = (int) (DisplayUtil.getMobileHeight(mContext) * 0.25);
+        vParams.height = (int) (ScreenUtils.getScreenHeightPX(mContext) * 0.25);
         mViewPager.setLayoutParams(vParams);
     }
 
@@ -100,7 +100,7 @@ public class RollHeaderView extends FrameLayout implements OnPageChangeListener 
                     dotIv.setImageResource(R.drawable.shape_dots_default);
                 }
                 //设置点的间距
-                params.setMargins(0, 0, DisplayUtil.dip2px(mContext, 5), 0);
+                params.setMargins(0, 0, ScreenUtils.dip2px(mContext, 5), 0);
                 dotIv.setLayoutParams(params);
 
                 //添加点到view上

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--day night主题的样式属性-->
+    <attr name="colorPri" format="reference|color" />
+    <attr name="vp_bg" format="reference|color" />
+    <attr name="navigationBackground" format="reference|color" />
+    <attr name="navigation_menu_text_color" format="reference" />
+    <attr name="navigation_item_text_color" format="reference|color" />
+
+
+
+
+    <!-- CircleProgressView -->
+    <declare-styleable name="CircleProgressView">
+        <attr name="matProg_progressIndeterminate" format="boolean"/>
+        <attr name="matProg_barColor" format="color"/>
+        <attr name="matProg_rimColor" format="color"/>
+        <attr name="matProg_rimWidth" format="dimension"/>
+        <attr name="matProg_spinSpeed" format="float"/>
+        <attr name="matProg_barSpinCycleTime" format="integer"/>
+        <attr name="matProg_circleRadius" format="dimension"/>
+        <attr name="matProg_fillRadius" format="boolean"/>
+        <attr name="matProg_barWidth" format="dimension"/>
+        <attr name="matProg_linearProgress" format="boolean"/>
+    </declare-styleable>
+</resources>

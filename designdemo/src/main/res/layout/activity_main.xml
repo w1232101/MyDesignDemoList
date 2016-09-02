@@ -23,7 +23,7 @@
                 android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="@color/colorPrimary"
+                app:contentScrim="?colorPri"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -58,7 +58,7 @@
                 android:id="@+id/sliding_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@color/colorPrimary"
+                android:background="?colorPri"
                 android:elevation="3dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
@@ -71,7 +71,7 @@
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/white"
+                android:background="?vp_bg"
                 android:overScrollMode="never"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </LinearLayout>
@@ -83,7 +83,7 @@
         android:layout_width="@dimen/navigation_max_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/navigation_background_light"
+        android:background="?navigationBackground"
         android:overScrollMode="never"
         app:headerLayout="@layout/layout_navigation_header"
         app:itemIconTint="@color/navigation_view_item_icon_color"

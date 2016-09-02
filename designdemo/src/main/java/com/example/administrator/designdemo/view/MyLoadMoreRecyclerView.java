@@ -60,11 +60,11 @@ private  Context mContext;
         this.mContext = context;
     }
 
-
+    int dy = -1 ;
     @Override
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
-
+        this.dy = dy;
         Log.i("onScrolled", dx + "   " + dy);
 
         RecyclerView.LayoutManager layoutManager = getLayoutManager();
@@ -107,7 +107,7 @@ private  Context mContext;
         Log.i("onScrollStateChanged", "visibleItemCount" + visibleItemCount);
         Log.i("onScrollStateChanged", "lastVisibleItemPosition" + lastVisibleItemPosition);
         Log.i("onScrollStateChanged", "totalItemCount" + totalItemCount);
-        if (visibleItemCount > 0 && state == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == totalItemCount - 1 && loadingData != null) {
+        if (visibleItemCount > 0 && state == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == totalItemCount - 1 && loadingData != null&&dy>0) {
             loadingData.onLoadMore();
         }
     }

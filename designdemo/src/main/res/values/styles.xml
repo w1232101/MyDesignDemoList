@@ -1,17 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="DayTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. Android自带的直接改属性，自定义的要抽成attrs改 -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPri">@color/colorPrimary</item>
+        <item name="vp_bg">@color/white</item>
+        <item name="navigationBackground">@color/navigation_background_light</item>
+        <item name="navigation_item_text_color">@color/white</item>
+        <item name="navigation_menu_text_color">@color/font_normal</item>
+    </style>
+    <style name="NightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPri">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="vp_bg">@color/gray</item>
+        <item name="navigationBackground">@color/gray</item>
+        <item name="navigation_item_text_color">@color/white_gray</item>
+        <item name="navigation_menu_text_color">@color/white_gray</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -41,4 +48,5 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
 </resources>

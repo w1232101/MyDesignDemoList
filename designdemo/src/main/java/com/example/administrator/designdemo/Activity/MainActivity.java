@@ -4,10 +4,12 @@
 
 package com.example.administrator.designdemo.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenuView;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -15,16 +17,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.example.administrator.designdemo.R;
 import com.example.administrator.designdemo.adapter.MyPagerAdapter;
+import com.example.administrator.designdemo.receiver.SkinBroadCastReceiver;
+import com.example.administrator.designdemo.uitle.ActivityCollector;
 import com.example.administrator.designdemo.uitle.DialogUtils;
+import com.example.administrator.designdemo.uitle.MyThemeManager;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyw.myapplication.Constant;
 import com.gyw.myapplication.RollHeaderView;
@@ -37,76 +43,56 @@ import butterknife.Bind;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    @Bind(R.id.abl)
-    public AppBarLayout abl;
+    private static final String MY_SKIN_ACTION = "MY_SKIN_ACTION";
+    public static final String SKIN_KEY = "SkinKey";
     @Bind(R.id.toolbar)
     public Toolbar toolbar;
-    //    @Bind(R.id.fab)
-//    FloatingActionButton fab;
     @Bind(R.id.sliding_tabs)
-    public  SlidingTabLayout slidingTabs;
+    public SlidingTabLayout slidingTabs;
     @Bind(R.id.view_pager)
     ViewPager viewPager;
     @Bind(R.id.navigation_view)
     NavigationView navigationView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-    @Bind(R.id.coor)
-    CoordinatorLayout coor;
     @Bind(R.id.rollHeadr)
     RollHeaderView rollHeadr;
     private ActionBarDrawerToggle mDrawerToggle;
     private int index = 0;
     private long exitTime = 0;
+    private List<String> linkUrl;
+    private SkinBroadCastReceiver skinReceiver;
 
+    public boolean isDay = true;
+    private SharedPreferences sp;
 
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
     }
 
-//    private Snackbar snackbar;
-
     @Override
     public void initViews(Bundle savedInstanceState) {
-//        fab.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//                if (snackbar != null && snackbar.isShown()) {
-//                    snackbar.dismiss();
-//                    return;
-//                }
-//                snackbar = Snackbar.make(view, "测试弹出提示", Snackbar.LENGTH_LONG);
-//                snackbar.show();
-//                snackbar.setAction("取消", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        snackbar.dismiss();
-//                    }
-//                });
-//            }
-//        });
+
+        sp = this.getSharedPreferences("config", Context.MODE_PRIVATE);
+        int theme = sp.getInt(SKIN_KEY,0);
+        View view = navigationView.getHeaderView(0).findViewById(R.id.iv_head_switch_mode);
+        ((ImageView)view).setImageResource(theme==1?R.drawable.ic_switch_daily:R.drawable.ic_switch_night);
         List<String> imgUrlList = Arrays.asList(Constant.imgUrls);
+        linkUrl = Arrays.asList(Constant.linkUrls);
 
         rollHeadr.setImgUrlData(imgUrlList);
         rollHeadr.setOnHeaderViewClickListener(new RollHeaderView.HeaderViewClickListener() {
             @Override
             public void HeaderViewClick(int position) {
-                Toast.makeText(MainActivity.this, "点击 : " + position, Toast.LENGTH_SHORT).show();
+
+                BrowserActivity.launch(MainActivity.this, linkUrl.get(position), " ");
+
             }
         });
 
-//        ll.setOnScrollChangeListener(new LinearLayout.OnScrollChangeListener() {
-//
-//            @Override
-//            public void onScrollChange(View view, int x, int y, int i2, int i3) {
-//                if (y >=0 && y <= 255) {
-//                    toolbar.setBackgroundColor(Color.argb(y, 0xFA, 0x71, 0x98));
-//                }
-//            }
-//        });
 
+        //去掉Navigation的scrollbar
         disableNavigationViewScrollbars(navigationView);
         drawerLayout.addDrawerListener(new DrawerListener());
 
@@ -115,94 +101,123 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), this));
         viewPager.setOffscreenPageLimit(4);
         slidingTabs.setViewPager(viewPager);
-//      slidingTabs2.setViewPager(viewPager);
 
+        //注册换肤的广播接收者
+        registerBroadReceiver();
+        navigationView.getHeaderView(0).findViewById(R.id.iv_head_switch_mode).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                int theme = sp.getInt(SKIN_KEY,0);
+                MyThemeManager.changeSkin(MainActivity.this,theme==0?1:0);
+            }
+        });
+    }
+
+    private void registerBroadReceiver() {
+        if (skinReceiver == null) {
+            skinReceiver = new SkinBroadCastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    int stringExtra = intent.getIntExtra("MY_SKIN_ACTION",0);
+
+                    Log.i("wjx","theme:"+stringExtra);
+                    sp.edit().putInt(SKIN_KEY,stringExtra).apply();
+                    for (int i = 0; i < ActivityCollector.activities.size(); i++) {
+
+                        ActivityCollector.activities.get(i).recreate();
+                    }
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(MY_SKIN_ACTION);
+            registerReceiver(skinReceiver, filter);
+        }
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            switch (item.getItemId())
-            {
-                case R.id.item_home:
-                    // 主页
-                    index = 0;
+        drawerLayout.closeDrawer(GravityCompat.START);
+        switch (item.getItemId()) {
+            case R.id.item_home:
+                // 主页
+                index = 0;
 //                    setShowingFragment(fragments[0]);
-                    item.setChecked(true);
+                item.setChecked(true);
 //                    mToolbar.setLogo(R.drawable.ic_bili_logo_white);
 //                    mToolbar.setTitle("");
-                    setMenuShow(false);
-                    return true;
+                setMenuShow(false);
+                return true;
 
-                case R.id.item_download:
-                    // 离线缓存
-                    item.setChecked(true);
+            case R.id.item_download:
+                // 离线缓存
+                item.setChecked(true);
 //                    startActivity(new Intent(MainActivity.this, OffLineDownloadActivity.class));
-                    return true;
+                return true;
 
-                case R.id.item_favourite:
-                    // 我的收藏
-                    index = 2;
+            case R.id.item_favourite:
+                // 我的收藏
+                index = 2;
 //                    setShowingFragment(fragments[2]);
-                    item.setChecked(true);
+                item.setChecked(true);
 //                    mToolbar.setTitle("我的收藏");
 //                    mToolbar.setLogo(null);
 //                    setMenuShow(true);
-                    return true;
+                return true;
 
-                case R.id.item_history:
-                    // 历史记录
-                    index = 3;
+            case R.id.item_history:
+                // 历史记录
+                index = 3;
 //                    setShowingFragment(fragments[3]);
-                    item.setChecked(true);
+                item.setChecked(true);
 //                    mToolbar.setTitle("历史记录");
 //                    mToolbar.setLogo(null);
 //                    setMenuShow(true);
-                    return true;
+                return true;
 
-                case R.id.item_group:
-                    // 关注的人
-                    index = 4;
+            case R.id.item_group:
+                // 关注的人
+                index = 4;
 //                    setShowingFragment(fragments[4]);
-                    item.setChecked(true);
+                item.setChecked(true);
 //                    mToolbar.setTitle("关注的人");
 //                    mToolbar.setLogo(null);
 //                    setMenuShow(true);
-                    return true;
+                return true;
 
-                case R.id.item_tracker:
-                    // 消费记录
-                    index = 5;
+            case R.id.item_tracker:
+                // 消费记录
+                index = 5;
 //                    setShowingFragment(fragments[5]);
-                    item.setChecked(true);
+                item.setChecked(true);
 //                    mToolbar.setTitle("消费记录");
 //                    mToolbar.setLogo(null);
 //                    setMenuShow(true);
-                    return true;
+                return true;
 
-                case R.id.item_theme:
-                    // 主题选择
+            case R.id.item_theme:
+                // 主题选择
 
-                    return true;
+                return true;
 
-                case R.id.item_app:
-                    // 应用推荐
+            case R.id.item_app:
+                // 应用推荐
 
-                    return true;
+                return true;
 
-                case R.id.item_settings:
-                    // 设置中心
-                    index = 1;
+            case R.id.item_settings:
+                // 设置中心
+                index = 1;
 //                    setShowingFragment(fragments[1]);
-                    item.setChecked(true);
+                item.setChecked(true);
 //                    mToolbar.setTitle("设置与帮助");
 //                    mToolbar.setLogo(null);
 //                    setMenuShow(true);
-                    return true;
-            }
-
-            return false;
+                return true;
         }
+
+        return false;
+    }
 
     private class DrawerListener implements DrawerLayout.DrawerListener {
 
@@ -272,6 +287,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
+
     private void disableNavigationViewScrollbars(NavigationView navigationView) {
         if (navigationView != null) {
             NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
@@ -280,17 +296,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }
     }
+
     /**
      * flase 显示 true不显示
      *
      * @param isShow
      */
-    public void setMenuShow(boolean isShow)
-    {
+    public void setMenuShow(boolean isShow) {
         //切换fragment时改变menu的显示
 //        isShowMenu = isShow;
         getWindow().invalidatePanelMenu(Window.FEATURE_OPTIONS_PANEL);
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {

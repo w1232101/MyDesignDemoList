@@ -31,7 +31,6 @@ import com.example.administrator.designdemo.uitle.MyOkHttpUtils;
 import com.example.administrator.designdemo.uitle.MyRecyclerCommonAdapter;
 import com.example.administrator.designdemo.uitle.ScreenUtils;
 import com.example.administrator.designdemo.view.MyLoadMoreRecyclerView;
-import com.flyco.tablayout.SlidingTabLayout;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
@@ -49,7 +48,6 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
     MyLoadMoreRecyclerView rv;
     @Bind(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
-    private SlidingTabLayout sliding_tabs;
     private int screenWidth;
     private MyRecyclerCommonAdapter<GankEntity> adapter;
 
@@ -73,6 +71,7 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
     List<String> mDatas = new ArrayList<String>();
     private List<GankEntity> entity;
     private int startIndex = 2;
+
     @Override
     public void finishCreateView(Bundle state) {
         for (int i = 0; i < 30; i++) {
@@ -102,97 +101,23 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
 
             }
         });
-                onRefresh();
+        onRefresh();
     }
 
     private void getPicFromNet(final int i) {
         Log.i("wjx", "i:" + i);
-        if (i!=1){
-
+        if (i != 1) {
             DialogUtils.showProgressDialog(getActivity(),"努力加载ing...");
         }
 //        Call<HttpResult> call = BaseApplication.getRetrofitInterface(getActivity()).getCommonDateNew("福利", 15, i);
 //        call.enqueue(new Callback<HttpResult>() {
 //            @Override
 //            public void onFailure(Call<HttpResult> call, Throwable t) {
-//                if (swipeLayout.isRefreshing()) {
-//                    swipeLayout.setRefreshing(false);
-//                }
-//                DialogUtils.closeProgressDialog();
 //            }
-//
 //            @Override
 //            public void onResponse(Call<HttpResult> call, Response<HttpResult> response) {
-//                HttpResult result = (HttpResult) response.body();
-//                if (adapter != null && entity.size() > 0) {
-//
-//                    if (swipeLayout.isRefreshing()) {
-//                        swipeLayout.setRefreshing(false);
-//                    }
-//                    if (i == 1) {
-//                        startIndex=2;
-//                        entity.clear();
-//                        entity = result.getResults();
-//                        adapter.setDatas(entity);
-//                        DialogUtils.closeProgressDialog();
-//                        adapter.notifyDataSetChanged();
-//                        return;
-//                    }
-//                    if (result.getResults().size() == 0) {
-//                        DialogUtils.closeProgressDialog();
-//                        DialogUtils.showToast(getActivity(), "没有更多数据了！", 0);
-//                        return;
-//                    }
-//                    entity.addAll(result.getResults());
-//                    startIndex++;
-//                    adapter.setDatas(entity);
-//                    DialogUtils.closeProgressDialog();
-//                    adapter.notifyDataSetChanged();
-//                    return;
-//                }
-//                entity = result.getResults();
-//                adapter = new MyRecyclerCommonAdapter<GankEntity>(getActivity(), R.layout.item_welfare_staggered, entity) {
-//                    @Override
-//                    protected void convert(final ViewHolder holder, GankEntity s, final int position) {
-//                        ((TextView) holder.getView(R.id.tvShowTime)).setText(s.getPublishedAt().substring(0, s.getPublishedAt().indexOf("T")));
-//                        Glide.with(getActivity())
-//                                .load(s.getUrl())
-//                                .asBitmap()
-//                                .placeholder(R.drawable.pic_gray_bg)
-//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                .into(new SimpleTarget<Bitmap>(screenWidth / 2, screenWidth / 2) {
-//                                          @Override
-//                                          public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                                              int width = resource.getWidth();
-//                                              int height = resource.getHeight();
-//                                              //计算高宽比
-//                                              int finalHeight = (screenWidth / 2) * height / width;
-//                                              ViewGroup.LayoutParams layoutParams = holder.getView(R.id.rl_root).getLayoutParams();
-//                                              layoutParams.height = finalHeight;
-//                                              ((ImageView) holder.getView(R.id.image)).setImageBitmap(resource);
-//                                          }
-//                                      }
-//                                );
-//                        holder.getView(R.id.card_view).setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                HttpResult result1 = new HttpResult();
-//                                result1.setResults(entity);
-//                                Intent intent = new Intent(getActivity(),ImageShowActivity.class);
-//                                intent.putExtra("pos",position);
-//                                intent.putExtra("datas",result1);
-//                                startActivity(intent);
-//                            }
-//                        });
-//                    }
-//                };
-//                if (swipeLayout.isRefreshing()) {
-//                    swipeLayout.setRefreshing(false);
-//                }
-//                rv.setAdapter(adapter);
 //            }
 //        });
-
         MyOkHttpUtils.getInstance(getActivity(), new MyCallBack() {
 
             @Override
@@ -250,14 +175,34 @@ public class RecommendedFragment extends BaseFragment implements SwipeRefreshLay
                         holder.getView(R.id.card_view).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+
                                 HttpResult result1 = new HttpResult();
                                 result1.setResults(entity);
                                 Intent intent = new Intent(getActivity(), ImageShowActivity.class);
                                 intent.putExtra("pos", position);
                                 intent.putExtra("datas", result1);
                                 startActivity(intent);
+                                getActivity().overridePendingTransition(R.anim.alpha_in,
+                                       R.anim.alpha_out);
                             }
                         });
+//                        holder.getView(R.id.card_view).setOnTouchListener(new View.OnTouchListener() {
+//                            @Override
+//                            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                                switch (motionEvent.getAction()) {
+//                                    case MotionEvent.ACTION_DOWN:
+//                                        view.setScaleX(1.1f);
+//                                        view.setScaleY(1.1f);
+//                                        break;
+//                                    case MotionEvent.ACTION_UP:
+//                                    case MotionEvent.ACTION_CANCEL:
+//                                        view.setScaleX(1f);
+//                                        view.setScaleY(1f);
+//                                        break;
+//                                }
+//                                return false;
+//                            }
+//                        });
                     }
                 };
                 if (swipeLayout.isRefreshing()) {

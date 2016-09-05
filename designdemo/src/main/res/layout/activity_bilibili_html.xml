@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="?colorPri"
             android:elevation="0dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -31,6 +31,12 @@
             android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <View
+            android:id="@+id/bg"
+            android:background="#88000000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           />
 
         <com.example.administrator.designdemo.view.CircleProgressView
             android:id="@+id/circle_progress"

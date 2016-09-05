@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.webkit.WebView;
 
 import com.example.administrator.designdemo.R;
 
@@ -86,13 +88,36 @@ public class MyThemeManager {
         sp.edit().putInt(SkinKey, value).apply();
     }
 
-    private static int getSharePreSkin(Context context, int defValue) {
+    public static int getSharePreSkin(Context context, int defValue) {
         if (sp == null) {
             sp = context.getSharedPreferences(CONFIG, Context.MODE_PRIVATE);
         }
         return sp.getInt(SkinKey, defValue);
     }
+    /*--------------------WebView 夜间模式-----------------*/
+    public static void setupWebView(Context context,WebView webView, String backgroudColor, String fontColor, String urlColor) {
+        if (webView != null) {
+            webView.setBackgroundColor(0);
+            Log.i("wjx","getCurrentSkinType(context):"+getCurrentSkinType(context));
+            if (getCurrentSkinType(context) == THEME_NIGHT) {
+                String js = String.format(jsStyle, backgroudColor, fontColor, urlColor, backgroudColor);
+                webView.loadUrl(js);
+            }
+        }
+    }
 
+    private static String jsStyle = "javascript:(function(){\n" +
+            "\t\t   document.body.style.backgroundColor=\"%s\";\n" +
+            "\t\t    document.body.style.color=\"%s\";\n" +
+            "\t\t\tvar as = document.getElementsByTagName(\"a\");\n" +
+            "\t\tfor(var i=0;i<as.length;i++){\n" +
+            "\t\t\tas[i].style.color = \"%s\";\n" +
+            "\t\t}\n" +
+            "\t\tvar divs = document.getElementsByTagName(\"div\");\n" +
+            "\t\tfor(var i=0;i<divs.length;i++){\n" +
+            "\t\t\tdivs[i].style.backgroundColor = \"%s\";\n" +
+            "\t\t}\n" +
+            "\t\t})()";
 
 
 }

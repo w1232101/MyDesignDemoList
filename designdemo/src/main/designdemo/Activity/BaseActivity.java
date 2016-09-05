@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.administrator.designdemo.uitle.ActivityCollector;
 import com.example.administrator.designdemo.uitle.MyThemeManager;
-import com.example.administrator.designdemo.uitle.StatusBarCompat;
 
 import butterknife.ButterKnife;
 
@@ -29,14 +28,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActivityCollector.addActivity(this);
         //初始化黄油刀控件绑定框架
         ButterKnife.bind(this);
-        //适配4.4系统状态栏
-        StatusBarCompat.compat(this);
+        //适配4.4系统状态栏 4.4要在toolbar之前设置状态栏 5.0及以后都是在toolbar后设置
+        setStatusBarColor();
         //初始化控件
         initViews(savedInstanceState);
         //初始化ToolBar
         initToolBar();
         //设置全局状态栏颜色
-        StatusBarCompat.compat(this);
+        setStatusBarColor();
     }
 
     @Override
@@ -52,5 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract void initViews(Bundle savedInstanceState);
 
     public abstract void initToolBar();
+    public abstract void setStatusBarColor();
 
 }

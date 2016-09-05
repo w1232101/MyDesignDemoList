@@ -1,6 +1,7 @@
 package com.example.administrator.designdemo.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.example.administrator.designdemo.R;
 import com.example.administrator.designdemo.adapter.ImageShowPagerAdapter;
 import com.example.administrator.designdemo.bean.GankEntity;
 import com.example.administrator.designdemo.bean.HttpResult;
+import com.example.administrator.designdemo.uitle.StatusBarCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,14 @@ public class ImageShowActivity extends BaseActivity {
     @Override
     public void initToolBar() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        View decorView = getWindow().getDecorView();
+         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+        decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    @Override
+    public void setStatusBarColor() {
+        StatusBarCompat.compat(this, Color.parseColor("#00000000"));
     }
 
     @Override

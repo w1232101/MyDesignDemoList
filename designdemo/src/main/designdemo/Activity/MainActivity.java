@@ -4,11 +4,15 @@
 
 package com.example.administrator.designdemo.Activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +23,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -31,6 +36,7 @@ import com.example.administrator.designdemo.receiver.SkinBroadCastReceiver;
 import com.example.administrator.designdemo.uitle.ActivityCollector;
 import com.example.administrator.designdemo.uitle.DialogUtils;
 import com.example.administrator.designdemo.uitle.MyThemeManager;
+import com.example.administrator.designdemo.uitle.StatusBarCompat;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.gyw.myapplication.Constant;
 import com.gyw.myapplication.RollHeaderView;
@@ -58,14 +64,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Bind(R.id.rollHeadr)
     RollHeaderView rollHeadr;
     private ActionBarDrawerToggle mDrawerToggle;
-    private int index = 0;
     private long exitTime = 0;
+    private int index = 0;
     private List<String> linkUrl;
     private SkinBroadCastReceiver skinReceiver;
-
-    public boolean isDay = true;
+    private int theme;
     private SharedPreferences sp;
-
+    private long lastTime = System.currentTimeMillis();
+    private Dialog dialog;
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -75,7 +81,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void initViews(Bundle savedInstanceState) {
 
         sp = this.getSharedPreferences("config", Context.MODE_PRIVATE);
-        int theme = sp.getInt(SKIN_KEY,0);
+        theme = sp.getInt(SKIN_KEY,0);
         View view = navigationView.getHeaderView(0).findViewById(R.id.iv_head_switch_mode);
         ((ImageView)view).setImageResource(theme==1?R.drawable.ic_switch_daily:R.drawable.ic_switch_night);
         List<String> imgUrlList = Arrays.asList(Constant.imgUrls);
@@ -106,10 +112,39 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         registerBroadReceiver();
         navigationView.getHeaderView(0).findViewById(R.id.iv_head_switch_mode).setOnClickListener(new View.OnClickListener() {
 
+
             @Override
             public void onClick(View view) {
-                int theme = sp.getInt(SKIN_KEY,0);
-                MyThemeManager.changeSkin(MainActivity.this,theme==0?1:0);
+                long currtTime = System.currentTimeMillis();
+                if (currtTime - lastTime < 1000) {
+                    DialogUtils.showToast(MainActivity.this,"你的手速太快了...",0);
+                    lastTime = currtTime;
+                    return;
+                }
+
+                theme = sp.getInt(SKIN_KEY, 0);
+
+                View  layout = LayoutInflater.from(MainActivity.this).inflate(R.layout.day_bg, null);
+                ImageView theme_bg = (ImageView) layout.findViewById(R.id.theme_bg);
+                theme_bg.setImageResource(theme == 0 ? R.drawable.bg_night_theme : R.drawable.bg_day_theme);
+                if (dialog==null) {
+                    dialog = new Dialog(MainActivity.this, R.style.Dialog_Fullscreen);
+                    dialog.setContentView(layout);
+                    dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
+                }
+                    dialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        MyThemeManager.changeSkin(MainActivity.this, theme == 0 ? 1 : 0);
+                    }
+                }, 500);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                    }
+                }, 2000);
             }
         });
     }
@@ -133,6 +168,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             filter.addAction(MY_SKIN_ACTION);
             registerReceiver(skinReceiver, filter);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (skinReceiver==null)
+            return;
+        unregisterReceiver(skinReceiver);
     }
 
     @Override
@@ -256,7 +299,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void initToolBar() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            //设置全局状态栏颜色
+        }
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
 //        这句是什么意思呢？
 //        允许窗口扩展到屏幕之外。 但这样会把ToolBar顶到最上面去，这时候再给ToolBar设置一个MarginTop就好了。
 //        LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) toolbar.getLayoutParams();
@@ -286,6 +336,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         };
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void setStatusBarColor() {
+        StatusBarCompat.compat(this, Color.parseColor("#00000000"));
     }
 
     private void disableNavigationViewScrollbars(NavigationView navigationView) {

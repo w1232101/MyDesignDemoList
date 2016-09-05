@@ -16,16 +16,19 @@ public class StatusBarCompat
 {
 
     private static final int INVALID_VAL = -1;
+    private static final int COLOR_DEFAULT_TRANSPARENT = Color.parseColor("#00000000");
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void compat(Activity activity, int statusColor)
     {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             if (statusColor != INVALID_VAL)
             {
                 activity.getWindow().setStatusBarColor(statusColor);
+            }else{
+                int color = MyThemeManager.getSharePreSkin(activity,0)==0?COLOR_DEFAULT:COLOR_DEFAULT_NIGHT;
+                activity.getWindow().setStatusBarColor(color);
             }
             return;
         }
@@ -53,6 +56,7 @@ public class StatusBarCompat
     }
 
     private static final int COLOR_DEFAULT = Color.parseColor("#FA7198");
+    private static final int COLOR_DEFAULT_NIGHT = Color.parseColor("#96435B");
 
     public static void compat(Activity activity)
     {
